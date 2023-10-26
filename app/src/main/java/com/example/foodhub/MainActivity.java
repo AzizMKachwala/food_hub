@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     CardView cvFacebook, cvGoogle;
     Button btnSkip, btnEmailPhone;
-    TextView txtAlreadySignIn;
+    TextView txtAlSignIn;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         cvGoogle = findViewById(R.id.cvGoogle);
         btnSkip = findViewById(R.id.btnSkip);
         btnEmailPhone = findViewById(R.id.btnEmailPhone);
-        txtAlreadySignIn = findViewById(R.id.txtAlreadySignIn);
+        txtAlSignIn = findViewById(R.id.txtAlSignIn);
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,16 +58,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "Email or Phone SignUp", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, SignUpActivity.class));
-                finish();
             }
         });
 
-        txtAlreadySignIn.setOnClickListener(new View.OnClickListener() {
+        txtAlSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "Already Signed Up. SignIn Now", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
             }
         });
 
