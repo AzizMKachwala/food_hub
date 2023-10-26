@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:hint="Email"
+            android:text="Email"
             android:textSize="@dimen/_15ssp" />
 
         <androidx.cardview.widget.CardView
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:hint="Password"
+            android:text="Password"
             android:textSize="@dimen/_15ssp" />
 
         <androidx.cardview.widget.CardView
