@@ -16,6 +16,7 @@
         app:cardCornerRadius="@dimen/_10sdp">
 
         <ImageView
+            android:id="@+id/splash_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/applogo"
@@ -30,6 +31,7 @@
         android:layout_marginTop="@dimen/_10sdp">
 
         <ImageView
+            android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/food_hub" />

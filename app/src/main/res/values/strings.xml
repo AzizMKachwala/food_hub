@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Food Hub</string>
     <string name="default_web_client_id">\n</string>
+
+    <string name="facebook_app_id">1325329795012348</string>
+    <string name="fb_login_protocol_scheme">fb1325329795012348</string>
+    <string name="facebook_client_token">1ff16418f6e4254bce349054a8541f1f</string>
+
 </resources>
