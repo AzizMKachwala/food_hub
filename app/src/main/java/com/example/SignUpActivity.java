@@ -18,6 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodhub.R;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,11 +34,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -43,6 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
     CardView cvFacebook, cvGoogle;
     String password = "Hide";
 
+    CallbackManager callbackManager;
     FirebaseAuth auth;
     FirebaseDatabase database;
     GoogleSignInClient googleSignInClient;
@@ -65,6 +75,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
         imgPasswordCloseEye.setOnClickListener(v -> {
             if (password.equals("Hide")) {
@@ -118,7 +130,8 @@ public class SignUpActivity extends AppCompatActivity {
         cvFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(SignUpActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SignUpActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
+                facebookSignIn();
             }
         });
 
@@ -132,15 +145,106 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(SignUpActivity.this, "GOOGLE LOGIN", Toast.LENGTH_SHORT).show();
-                googleSignIn();
+                if(auth.getCurrentUser() != null){
+                    auth.signOut();
+                }
+                clearGoogle();
             }
         });
 
         if(auth.getCurrentUser() != null){
-            startActivity(new Intent(SignUpActivity.this,HomeScreenActivity.class));
+
+            FirebaseUser user = auth.getCurrentUser();
+            Intent intent = new Intent(SignUpActivity.this, HomeScreenActivity.class);
+            intent.putExtra("user_name", user.getDisplayName());
+            intent.putExtra("user_email", user.getEmail());
+            intent.putExtra("user_photo", user.getPhotoUrl().toString());
+            startActivity(intent);
             finish();
         }
 
+    }
+
+    private void clearGoogle() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account != null){
+            googleSignInClient.revokeAccess()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            googleSignIn();
+                        }
+                    });
+        }
+        else {
+            googleSignIn();
+        }
+    }
+
+    private void facebookSignIn() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(@NonNull FacebookException e) {
+
+            }
+        });
+    }
+
+    private void handleFacebookAccessToken(AccessToken accessToken) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = auth.getCurrentUser();
+
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("id", user.getUid());
+                            map.put("email", user.getEmail());
+                            map.put("name", user.getDisplayName());
+                            map.put("profile", user.getPhotoUrl().toString());
+
+                            database.getReference().child("facebook_users").child(user.getUid()).setValue(map)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                // Redirect to the HomeScreenActivity upon successful authentication and database update
+
+                                                Intent intent = new Intent(SignUpActivity.this, HomeScreenActivity.class);
+                                                intent.putExtra("user_name", user.getDisplayName());
+                                                intent.putExtra("user_email", user.getEmail());
+                                                intent.putExtra("user_photo", user.getPhotoUrl().toString());
+                                                startActivity(intent);
+                                                finish();
+
+//                                                startActivity(new Intent(SignUpActivity.this, HomeScreenActivity.class));
+                                            }
+                                            else {
+                                                // Display a Toast message if writing to the database fails
+                                                Toast.makeText(SignUpActivity.this, "Failed to write user information to the database", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void googleSignIn() {
@@ -150,6 +254,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == Sign_In){
@@ -157,7 +264,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             try{
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuth(account.getIdToken());
+                handleGoogleAuth(account.getIdToken());
             }
             catch (Exception e){
                 Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -165,7 +272,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuth(String idToken) {
+    private void handleGoogleAuth(String idToken) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
         auth.signInWithCredential(credential)
@@ -182,21 +289,21 @@ public class SignUpActivity extends AppCompatActivity {
                             map.put("name",user.getDisplayName());
                             map.put("profile",user.getPhotoUrl().toString());
 
-                            database.getReference().child("users").child(user.getUid()).setValue(map)
+                            database.getReference().child("google_users").child(user.getUid()).setValue(map)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> databaseTask) {
                                             if (databaseTask.isSuccessful()) {
                                                 // Redirect to the HomeScreenActivity upon successful authentication and database update
 
-//                                                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
-//                                                intent.putExtra("user_name",user.getDisplayName());
-//                                                intent.putExtra("user_email",user.getEmail());
-//                                                intent.putExtra("user_photo",user.getPhotoUrl().toString());
-//                                                startActivity(intent);
-//                                                finish();
+                                                Intent intent = new Intent(SignUpActivity.this, HomeScreenActivity.class);
+                                                intent.putExtra("user_name",user.getDisplayName());
+                                                intent.putExtra("user_email",user.getEmail());
+                                                intent.putExtra("user_photo",user.getPhotoUrl().toString());
+                                                startActivity(intent);
+                                                finish();
 
-                                                startActivity(new Intent(SignUpActivity.this, HomeScreenActivity.class));
+//                                                startActivity(new Intent(SignUpActivity.this, HomeScreenActivity.class));
                                             } else {
                                                 // Display a Toast message if writing to the database fails
                                                 Toast.makeText(SignUpActivity.this, "Failed to write user information to the database", Toast.LENGTH_SHORT).show();

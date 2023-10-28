@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         cvFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
                 facebookSignIn();
             }
         });
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         cvGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(MainActivity.this, "GOOGLE LOGIN", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "GOOGLE LOGIN", Toast.LENGTH_SHORT).show();
 
                 if(auth.getCurrentUser() != null){
                     auth.signOut();
@@ -144,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
-
+        else {
+            googleSignIn();
+        }
     }
 
     private void facebookSignIn() {
@@ -166,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void handleFacebookAccessToken(AccessToken accessToken) {
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         auth.signInWithCredential(credential)
@@ -204,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -230,14 +232,14 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuth(account.getIdToken());
+                handleGoogleAuth(account.getIdToken());
             } catch (Exception e) {
                 Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void firebaseAuth(String idToken) {
+    private void handleGoogleAuth(String idToken) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential)

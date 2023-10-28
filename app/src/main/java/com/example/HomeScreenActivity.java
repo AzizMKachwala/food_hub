@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    TextView txtUserName,txtUserEmail;
+    TextView txtUserName, txtUserEmail;
     ImageView imgProfilePhoto;
     Button btnLogOut;
     FirebaseAuth auth;
@@ -37,14 +37,14 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         btnLogOut.setOnClickListener(view -> {
 //                FirebaseAuth.getInstance().signOut();
+//            Toast.makeText(HomeScreenActivity.this, "Logout Button Clicked", Toast.LENGTH_SHORT).show();
             auth.signOut();
-            Toast.makeText(HomeScreenActivity.this, "Logout Button Clicked", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(HomeScreenActivity.this, MainActivity.class));
             finish();
         });
 
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             String userName = intent.getStringExtra("user_name");
             String userEmail = intent.getStringExtra("user_email");
             String userPhoto = intent.getStringExtra("user_photo");
