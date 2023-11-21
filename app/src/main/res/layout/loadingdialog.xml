@@ -15,7 +15,7 @@
             android:layout_width="@dimen/_70sdp"
             android:layout_height="@dimen/_70sdp"
             android:layout_gravity="center"
-            android:indeterminateTint="#FE724C"/>
+            android:indeterminateTint="@color/orange"/>
 
         <ImageView
             android:layout_width="@dimen/_20sdp"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textStyle="bold"
-        android:textColor="#FE724C"
+        android:textColor="@color/orange"
         android:text="LOADING..."/>
 
 </LinearLayout>

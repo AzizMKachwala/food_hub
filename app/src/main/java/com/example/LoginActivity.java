@@ -42,6 +42,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
@@ -127,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
         cvFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(LoginActivity.this, "FACEBOOK LOGIN", Toast.LENGTH_SHORT).show();
                 facebookSignIn();
             }
         });
@@ -162,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void facebookSignIn() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

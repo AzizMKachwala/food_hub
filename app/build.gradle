@@ -64,5 +64,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    //Facebook Authentication
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+
+    //Country
+    implementation 'com.hbb20:ccp:2.5.1'
 }

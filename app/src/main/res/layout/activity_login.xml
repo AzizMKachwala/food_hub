@@ -69,10 +69,10 @@
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/white"
                 android:hint="Enter Email or Phone"
-                android:paddingStart="@dimen/_10sdp"
                 android:imeOptions="actionNext"
                 android:inputType="textAutoComplete"
-                android:minHeight="@dimen/_30sdp" />
+                android:minHeight="@dimen/_30sdp"
+                android:paddingStart="@dimen/_10sdp" />
 
         </androidx.cardview.widget.CardView>
 
@@ -96,10 +96,10 @@
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/white"
                 android:hint="Enter Password"
-                android:paddingStart="@dimen/_10sdp"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:minHeight="@dimen/_30sdp" />
+                android:minHeight="@dimen/_30sdp"
+                android:paddingStart="@dimen/_10sdp" />
 
             <ImageView
                 android:id="@+id/imgPasswordCloseEye"
@@ -118,9 +118,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
-            android:backgroundTint="#FE724C"
+            android:backgroundTint="@color/orange"
             android:text="FORGOT PASSWORD?"
-            android:textColor="#FE724C" />
+            android:textColor="@color/orange" />
 
         <Button
             android:id="@+id/btnLogin"
@@ -130,7 +130,7 @@
             android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginRight="@dimen/_30sdp"
             android:layout_marginBottom="@dimen/_20sdp"
-            android:backgroundTint="#FE724C"
+            android:backgroundTint="@color/orange"
             android:text="Login" />
 
         <LinearLayout
@@ -154,7 +154,7 @@
                 android:gravity="center"
                 android:padding="@dimen/_5sdp"
                 android:text="Sign Up"
-                android:textColor="#FE724C"
+                android:textColor="@color/orange"
                 android:textStyle="bold" />
 
         </LinearLayout>

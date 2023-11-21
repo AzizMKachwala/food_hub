@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.foodhub.PhoneRegistrationActivity;
 import com.example.foodhub.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -41,6 +42,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -109,7 +111,8 @@ public class SignUpActivity extends AppCompatActivity {
                     etvPassword.requestFocus();
                 }
                 else {
-                    Toast.makeText(SignUpActivity.this, "ADD USER", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SignUpActivity.this, "ADD USER", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpActivity.this, PhoneRegistrationActivity.class));
                 }
             }
 
@@ -182,7 +185,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void facebookSignIn() {
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("public_profile"));
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

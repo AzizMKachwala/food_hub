@@ -137,8 +137,8 @@
             android:layout_marginTop="@dimen/_30sdp"
             android:layout_marginRight="@dimen/_30sdp"
             android:layout_marginBottom="@dimen/_30sdp"
-            android:backgroundTint="#FE724C"
-            android:text="SIGN UP" />
+            android:backgroundTint="@color/orange"
+            android:text="OTP Verification" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -162,7 +162,7 @@
                 android:gravity="center"
                 android:padding="@dimen/_5sdp"
                 android:text="Login"
-                android:textColor="#FE724C"
+                android:textColor="@color/orange"
                 android:textStyle="bold" />
 
         </LinearLayout>
